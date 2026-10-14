@@ -1,0 +1,18 @@
+{
+  "id": "aitm",
+  "name": "Aitm",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Phishing kit — reverse-proxy session stealer, captive portal, OAuth consent, lookalike domains.",
+  "entry": "aitm.html",
+  "assets": {
+    "html": "aitm.html",
+    "css": "aitm.css",
+    "js": "aitm.js"
+  },
+  "navbar": {
+    "label": "Aitm",
+    "icon": "fa-fish"
+  }
+}

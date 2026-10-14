@@ -1,0 +1,18 @@
+{
+  "id": "worm",
+  "name": "Worm",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Lateral spreader — harvests creds, scans the LAN, remote-executes the agent, and repeats.",
+  "entry": "worm.html",
+  "assets": {
+    "html": "worm.html",
+    "css": "worm.css",
+    "js": "worm.js"
+  },
+  "navbar": {
+    "label": "Worm",
+    "icon": "fa-spider"
+  }
+}

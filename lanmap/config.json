@@ -1,0 +1,18 @@
+{
+  "id": "lanmap",
+  "name": "LanMap",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Map the victim's LAN — devices, MACs, open ports.",
+  "entry": "lanmap.html",
+  "assets": {
+    "html": "lanmap.html",
+    "css": "lanmap.css",
+    "js": "lanmap.js"
+  },
+  "navbar": {
+    "label": "LanMap",
+    "icon": "fa-network-wired"
+  }
+}

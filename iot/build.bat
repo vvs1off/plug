@@ -1,0 +1,72 @@
+@echo off
+setlocal enabledelayedexpansion
+
+set "GOWORK=off"
+set "PLUGIN_DIR=%~dp0"
+set "NATIVE_DIR=%PLUGIN_DIR%native"
+set "PLUGIN_NAME=iot"
+set "ZIP_OUT=%PLUGIN_DIR%%PLUGIN_NAME%.zip"
+
+if not defined BUILD_TARGETS set "BUILD_TARGETS=windows-amd64"
+
+pushd "%NATIVE_DIR%"
+
+for %%T in (%BUILD_TARGETS%) do (
+  for /f "tokens=1,2 delims=-" %%A in ("%%T") do (
+    set "TARGET_OS=%%A"
+    set "TARGET_ARCH=%%B"
+  )
+
+  set "EXT=so"
+  if "!TARGET_OS!"=="windows" set "EXT=dll"
+  if "!TARGET_OS!"=="darwin" set "EXT=dylib"
+
+  set "OUTFILE=%PLUGIN_DIR%%PLUGIN_NAME%-!TARGET_OS!-!TARGET_ARCH!.!EXT!"
+
+  echo [build] GOOS=!TARGET_OS! GOARCH=!TARGET_ARCH!
+  set "GOOS=!TARGET_OS!"
+  set "GOARCH=!TARGET_ARCH!"
+  set "CGO_ENABLED=1"
+  if "!TARGET_OS!"=="windows" set "CC=gcc"
+
+  go build -buildmode=c-shared -o "!OUTFILE!" .
+  if errorlevel 1 (
+    echo [error] build failed for !TARGET_OS!-!TARGET_ARCH!
+    popd
+    exit /b 1
+  )
+  echo [ok] !OUTFILE!
+)
+
+set "GOOS="
+set "GOARCH="
+set "CGO_ENABLED="
+set "CC="
+
+popd
+
+echo [build] preparing server.js
+copy /y "%PLUGIN_DIR%server.src.js" "%PLUGIN_DIR%server.js" >nul
+echo [ok] server.js
+
+if exist "%ZIP_OUT%" del /f /q "%ZIP_OUT%"
+
+set "BINLIST="
+for %%T in (%BUILD_TARGETS%) do (
+  for /f "tokens=1,2 delims=-" %%A in ("%%T") do (
+    set "TARGET_OS=%%A"
+    set "TARGET_ARCH=%%B"
+  )
+  set "EXT=so"
+  if "!TARGET_OS!"=="windows" set "EXT=dll"
+  if "!TARGET_OS!"=="darwin" set "EXT=dylib"
+  set "BINLIST=!BINLIST! %PLUGIN_NAME%-!TARGET_OS!-!TARGET_ARCH!.!EXT!"
+)
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$d='%PLUGIN_DIR%'.TrimEnd('\'); $n='%PLUGIN_NAME%'; $bins='%BINLIST%'.Trim(); $files=@($bins -split ' ' | Where-Object { $_ } | ForEach-Object { Join-Path $d $_ }); $files += @((Join-Path $d ($n+'.html')),(Join-Path $d ($n+'.css')),(Join-Path $d ($n+'.js')),(Join-Path $d 'config.json'),(Join-Path $d 'server.js')); $files = $files | Where-Object { Test-Path $_ }; Compress-Archive -Path $files -DestinationPath (Join-Path $d ($n+'.zip')) -Force"
+if errorlevel 1 (
+  echo [error] zip creation failed
+  exit /b 1
+)
+
+echo [ok] %ZIP_OUT%

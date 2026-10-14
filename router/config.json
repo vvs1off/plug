@@ -1,0 +1,18 @@
+{
+  "id": "router",
+  "name": "Router",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Router takeover — credential attack, DNS control, UPnP port mapping, ARP table dump.",
+  "entry": "router.html",
+  "assets": {
+    "html": "router.html",
+    "css": "router.css",
+    "js": "router.js"
+  },
+  "navbar": {
+    "label": "Router",
+    "icon": "fa-wifi"
+  }
+}

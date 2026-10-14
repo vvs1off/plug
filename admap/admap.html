@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admap</title>
+  <link rel="stylesheet" href="admap.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Admap</h1>
+    <span class="tag">active directory recon</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+      </div>
+
+      <div class="card">
+        <h2>domain</h2>
+        <label for="domain">domain (blank = current)</label>
+        <input id="domain" placeholder="corp.local" />
+        <label for="dc">domain controller (blank = auto via SRV)</label>
+        <input id="dc" placeholder="dc01.corp.local" />
+        <label for="baseDn">base dn (blank = derived)</label>
+        <input id="baseDn" placeholder="DC=corp,DC=local" />
+        <button id="discover" class="btn primary block">discover domain</button>
+        <div id="domainInfo" class="info empty">not discovered yet</div>
+      </div>
+
+      <div class="card">
+        <h2>credentials</h2>
+        <label for="user">user (blank = anonymous)</label>
+        <input id="user" placeholder="CORP\\user or user@corp.local" />
+        <label for="password">password</label>
+        <input id="password" type="password" />
+        <div class="hint">many domains allow unauthenticated LDAP reads. blank = try anonymous bind.</div>
+        <button id="enumerate" class="btn block">enumerate</button>
+      </div>
+
+      <div class="card">
+        <h2>roasting</h2>
+        <div class="actions">
+          <button id="kerberoast" class="btn">kerberoast</button>
+          <button id="asrep" class="btn">as-rep</button>
+        </div>
+        <div class="hint">lists crackable targets; ticket extraction needs a Kerberos implementation (see dcsync plugin).</div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>stats</h2>
+        <div class="stats">
+          <div class="stat"><span id="sUsers">0</span><label>users</label></div>
+          <div class="stat"><span id="sGroups">0</span><label>groups</label></div>
+          <div class="stat"><span id="sComps">0</span><label>computers</label></div>
+          <div class="stat"><span id="sPriv">0</span><label>privileged</label></div>
+          <div class="stat"><span id="sAsrep">0</span><label>as-rep</label></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>findings <span id="fCount" class="count">0</span></h2>
+        <div id="findings" class="findings empty">no findings — run enumerate</div>
+      </div>
+
+      <div class="card">
+        <h2>objects</h2>
+        <div class="filters">
+          <button class="btn ghost filter active" data-type="">all</button>
+          <button class="btn ghost filter" data-type="user">users</button>
+          <button class="btn ghost filter" data-type="group">groups</button>
+          <button class="btn ghost filter" data-type="computer">computers</button>
+          <input id="search" placeholder="search sam / name / description" />
+        </div>
+        <table class="tbl">
+          <thead><tr><th>sam</th><th>type</th><th>flags</th><th>spns</th><th>description</th></tr></thead>
+          <tbody id="objBody"></tbody>
+        </table>
+        <div id="objEmpty" class="empty">no objects</div>
+      </div>
+
+      <div class="card">
+        <h2>roast targets</h2>
+        <div id="roastList" class="feed empty">none listed</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="admap.js"></script>
+</body>
+</html>

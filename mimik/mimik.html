@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mimik</title>
+  <link rel="stylesheet" href="mimik.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Mimik</h1>
+    <span class="tag">credential dump</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>target</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost" title="refresh clients">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+
+        <div id="privRow" class="priv unknown">privileges: unknown</div>
+
+        <div class="actions">
+          <button id="checkPriv" class="btn ghost">check priv</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>dump</h2>
+        <p class="hint">hives are base64'd to the panel; lsass + oversized SYSTEM hive are dumped to disk and the path is reported for the file browser.</p>
+        <div class="actions">
+          <button id="dumpHives" class="btn primary">dump hives</button>
+          <button id="dumpLsass" class="btn danger">dump lsass</button>
+        </div>
+        <button id="dumpAll" class="btn block">dump everything</button>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card grow">
+        <h2>dumps</h2>
+        <div id="dumpList" class="dumps empty">nothing dumped yet</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="mimik.js"></script>
+</body>
+</html>

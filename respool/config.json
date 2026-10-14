@@ -1,0 +1,18 @@
+{
+  "id": "respool",
+  "name": "Respool",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Residential proxy pool — victims become rotating exit nodes.",
+  "entry": "respool.html",
+  "assets": {
+    "html": "respool.html",
+    "css": "respool.css",
+    "js": "respool.js"
+  },
+  "navbar": {
+    "label": "Respool",
+    "icon": "fa-shuffle"
+  }
+}

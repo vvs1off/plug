@@ -1,0 +1,18 @@
+{
+  "id": "dcsync",
+  "name": "Dcsync",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "DCSync replication, Kerberos ticket extraction, golden ticket forging.",
+  "entry": "dcsync.html",
+  "assets": {
+    "html": "dcsync.html",
+    "css": "dcsync.css",
+    "js": "dcsync.js"
+  },
+  "navbar": {
+    "label": "Dcsync",
+    "icon": "fa-crown"
+  }
+}

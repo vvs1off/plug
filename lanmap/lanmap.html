@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LanMap</title>
+  <link rel="stylesheet" href="lanmap.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>LanMap</h1>
+    <span class="tag">network topology</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost" title="refresh clients">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <div class="hint">scan runs on the selected client and maps the network it sits on.</div>
+      </div>
+
+      <div class="card">
+        <h2>scan</h2>
+        <button id="scan" class="btn primary block">scan network</button>
+        <div class="hint">reads the ARP table for live hosts, then probes common ports (21/22/23/80/135/139/443/445/3389/5985/8080...).</div>
+      </div>
+
+      <div class="card">
+        <h2>summary</h2>
+        <div class="stats">
+          <div class="stat"><span id="statHosts">0</span><label>hosts</label></div>
+          <div class="stat"><span id="statSmb">0</span><label>smb</label></div>
+          <div class="stat"><span id="statRdp">0</span><label>rdp</label></div>
+          <div class="stat"><span id="statWeb">0</span><label>http</label></div>
+        </div>
+        <div id="lastScan" class="hint">never scanned</div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card grow">
+        <h2>devices</h2>
+        <table id="deviceTable" class="devices">
+          <thead>
+            <tr><th>ip</th><th>mac</th><th>ports</th><th>guess</th></tr>
+          </thead>
+          <tbody id="deviceBody"></tbody>
+        </table>
+        <div id="empty" class="empty">no devices yet — run a scan</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="lanmap.js"></script>
+</body>
+</html>

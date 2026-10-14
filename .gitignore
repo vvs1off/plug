@@ -1,0 +1,28 @@
+# Build artifacts — these are produced by build.bat, not authored.
+# Committing them bloats the repo and puts compiled payloads in version control.
+*.dll
+*.so
+*.dylib
+*.exe
+
+# Plugin bundles
+*.zip
+
+# Generated server bundles (build.bat copies server.src.js -> server.js)
+*/server.js
+
+# Generated cgo headers
+*.h
+
+# Go build cache (created when GOCACHE is redirected into the tree)
+.gocache/
+.gotmp/
+go-build/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

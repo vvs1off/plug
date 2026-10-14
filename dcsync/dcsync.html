@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dcsync</title>
+  <link rel="stylesheet" href="dcsync.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Dcsync</h1>
+    <span class="tag">domain replication · kerberos</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+      </div>
+
+      <div class="card">
+        <h2>domain</h2>
+        <label for="domain">domain (blank = current)</label>
+        <input id="domain" placeholder="corp.local" />
+        <label for="dc">domain controller (blank = auto via SRV)</label>
+        <input id="dc" placeholder="dc01.corp.local" />
+        <button id="recon" class="btn primary block">recon</button>
+        <div id="reconInfo" class="info empty">not probed yet</div>
+      </div>
+
+      <div class="card">
+        <h2>credentials</h2>
+        <label for="user">user</label>
+        <input id="user" placeholder="CORP\\Administrator" />
+        <label for="password">password</label>
+        <input id="password" type="password" />
+        <label for="ntHash">nt hash (32 hex, for pass-the-hash)</label>
+        <input id="ntHash" placeholder="optional" />
+        <div class="hint">DCSync requires an account with <b>Replicating Directory Changes</b> — typically Domain Admin or a DC machine account.</div>
+      </div>
+
+      <div class="card">
+        <h2>actions</h2>
+        <div class="actions">
+          <button id="dcsync" class="btn danger">dcsync</button>
+          <button id="kerberoast" class="btn ghost">kerberoast</button>
+        </div>
+        <label for="targetUser">target user</label>
+        <input id="targetUser" placeholder="krbtgt / Administrator / victim" />
+        <button id="asrep" class="btn block">build as-rep request</button>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>dcsync probe</h2>
+        <div id="probeInfo" class="info empty">no probe run</div>
+      </div>
+
+      <div class="card">
+        <h2>golden ticket</h2>
+        <label for="krbtgtKey">krbtgt aes key (32 or 64 hex)</label>
+        <input id="krbtgtKey" placeholder="from DCSync output" />
+        <label for="domainSid">domain sid</label>
+        <input id="domainSid" placeholder="S-1-5-21-..." />
+        <button id="forge" class="btn block">forge golden ticket</button>
+        <div class="hint">the krbtgt key is what makes this work — without it there is nothing to sign with.</div>
+      </div>
+
+      <div class="card">
+        <h2>tickets <span id="tCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>kind</th><th>user</th><th>domain</th><th>etype</th><th>size</th><th></th></tr></thead>
+          <tbody id="ticketBody"></tbody>
+        </table>
+        <div id="ticketEmpty" class="empty">no tickets forged</div>
+      </div>
+
+      <div class="card">
+        <h2>kerberos requests <span id="rCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>kind</th><th>user</th><th>domain</th><th>size</th><th></th></tr></thead>
+          <tbody id="reqBody"></tbody>
+        </table>
+        <div id="reqEmpty" class="empty">no requests built</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="dcsync.js"></script>
+</body>
+</html>

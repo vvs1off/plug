@@ -1,0 +1,18 @@
+{
+  "id": "evasion",
+  "name": "Evasion",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "AMSI/ETW patching, direct syscalls, log wiping, timestomping.",
+  "entry": "evasion.html",
+  "assets": {
+    "html": "evasion.html",
+    "css": "evasion.css",
+    "js": "evasion.js"
+  },
+  "navbar": {
+    "label": "Evasion",
+    "icon": "fa-ghost"
+  }
+}

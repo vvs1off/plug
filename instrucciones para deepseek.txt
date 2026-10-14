@@ -1,0 +1,95 @@
+==========================================================================================================
+
+=============================================  FIRST PROMPT  =============================================
+
+==========================================================================================================
+
+
+
+Analize this GitHub repo, i want you to just look over it, don't spend too much time on it. After you comletely analize it and understood how plugins work, well get to work into a Project halfway done i have about a plugin for it.
+
+Repo: https://github.com/doesntbreaktos/Overlord
+
+
+
+==========================================================================================================
+
+============================================= SECOND PROMPT  =============================================
+
+==========================================================================================================
+
+
+
+Build the full Overlord plugin suite as separate plugins, in order: whisper, mimik, lanmap, worm, mitm, router, iot, admap, dcsync, respool, aitm, evasion, privsec, exfil — each a complete standalone plugin (native Go lib + server.js + UI + config.json + build script), starting with mimik now.
+
+whisper — discord spammer + token grab (app/browser/manual, client/server mode) -- in progress. (Whisper needs to be re-checked, it doesnt have the build.sh file when it uploads to the panel.)Hello world!
+uploads to the panel.)Hello world!
+uploads to the panel.)Hello world!
+•Thsliewsprntuig l♂♦•☺pdi☺pu eto☺.I or☺s ♂enifnnU ◙yor☺ lyu☺ i eeced
+================
+mimik — LSASS/SAM/SECURITY credential dump -- almost done
+lanmap — LAN topology + device discovery -- in progress
+worm — auto-spreader (cred dump + scan + remote exec + loop) -- next
+mitm — ARP spoof + DNS hijack + Responder hash capture + SMB relay -- next
+router — router takeover (admin/DNS/UPnP) -- next
+iot — camera / smart-TV / IoT takeover -- next
+admap — BloodHound-style AD recon + attack paths -- next
+dcsync — DCSync + golden ticket + kerberoast + pass-the-ticket -- next
+respool — residential proxy pool -- next
+aitm — phishing kit (AiTM/captive/OAuth/BitB/lookalikes) -- next
+evasion — AMSI/ETW patch + syscalls + BYOVD + log wipe + timestomp -- next
+privsec — potato / UAC bypass / token impersonation -- next
+exfil — ICMP/DNS/HTTPS covert channels -- next
+
+
+the roster
+already built
+
+id	what it is
+whisper	discord spammer + token grab (app/browser/manual, client/server mode) — done
+network family (the LAN chain)
+
+id	what it is
+lanmap	LAN topology — ARP, SMB/NetBIOS enum, port scan, live device graph. the foundation everything else reads
+router	router takeover — admin creds, DNS change, UPnP, port open, ARP table dump
+mitm	ARP spoof + DNS hijack + Responder hash capture + SMB relay — the whole "attack the LAN" package
+iot	camera / smart-TV / IoT takeover on the LAN
+spread + creds
+
+id	what it is
+mimik	LSASS / SAM / DPAPI credential dump (mimikatz-lite). the shared cred engine
+worm	auto-spreader — scan targets, use creds, remote-exec the agent, loop. leans on mimik + kematian
+domain family (the escalation ladder)
+
+id	what it is
+admap	BloodHound-style AD recon + attack-path graph
+dcsync	DCSync + golden ticket + kerberoasting + pass-the-ticket
+infra
+
+id	what it is
+respool	residential proxy pool (exit nodes + gateway)
+aitm	phishing kit — reverse-proxy AiTM + captive portal + OAuth consent + BitB + lookalike domains
+ops / support
+
+id	what it is
+evasion	AMSI/ETW patch + direct syscalls + BYOVD + log wipe + timestomp
+privsec	potato / UAC bypass / token impersonation
+exfil	ICMP / DNS / HTTPS covert channels
+the important design rule
+each plugin is an isolated DLL, so nothing shares native code. that means shared stuff gets orchestrated through the server, not copy-pasted:
+
+mimik is the only plugin that dumps creds. worm doesn't re-dump — it tells the C2 "infect B," then the C2 auto-fires mimik.collect + kematian.collect on B. same pattern as whisper leaning on kematian.
+lanmap is the only plugin that maps the network. router/mitm/worm all read its output instead of rescanning.
+this keeps every plugin small and means they compose instead of overlapping.
+
+build order
+whisper — discord spammer + token grab (app/browser/manual, client/server mode)
+mimik (the fuel — everything downstream needs it)
+lanmap (the map)
+worm (mimik + lanmap + executor + loop)
+mitm (responder + smb relay, reads lanmap)
+router (reads lanmap, feeds mitm/aitm)
+iot
+admap → dcsync
+respool + aitm
+evasion / privsec / exfil (wrap the rest)

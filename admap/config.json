@@ -1,0 +1,18 @@
+{
+  "id": "admap",
+  "name": "Admap",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "Active Directory enumeration and attack-path analysis via LDAP.",
+  "entry": "admap.html",
+  "assets": {
+    "html": "admap.html",
+    "css": "admap.css",
+    "js": "admap.js"
+  },
+  "navbar": {
+    "label": "Admap",
+    "icon": "fa-sitemap"
+  }
+}

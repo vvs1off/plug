@@ -1,0 +1,18 @@
+{
+  "id": "mitm",
+  "name": "Mitm",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "ARP spoof, DNS hijack, NTLM hash capture and SMB relay for the client's LAN.",
+  "entry": "mitm.html",
+  "assets": {
+    "html": "mitm.html",
+    "css": "mitm.css",
+    "js": "mitm.js"
+  },
+  "navbar": {
+    "label": "Mitm",
+    "icon": "fa-mask"
+  }
+}

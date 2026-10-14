@@ -1,0 +1,18 @@
+{
+  "id": "iot",
+  "name": "Iot",
+  "apiVersion": 2,
+  "runtime": "native",
+  "version": "1.0.0",
+  "description": "IP camera, smart TV and IoT device discovery and capture.",
+  "entry": "iot.html",
+  "assets": {
+    "html": "iot.html",
+    "css": "iot.css",
+    "js": "iot.js"
+  },
+  "navbar": {
+    "label": "Iot",
+    "icon": "fa-video"
+  }
+}

